@@ -596,11 +596,30 @@
     .cursor, .cursor-ring { display: none; }
     body { cursor: auto; }
     .hero-title { font-size: 42px; }
-    .hero-stats { position: static; flex-direction: row; gap: 20px; margin-top: 40px; }
-    .stat-num { font-size: 32px; }
+    .hero-stats {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 40px;
+      opacity: 1;
+      animation: none;
+    }
+    .stat {
+      text-align: left;
+      border-right: none;
+      border-left: 2px solid var(--gold);
+      padding-left: 14px;
+      padding-right: 0;
+      min-width: 70px;
+    }
+    .stat-num { font-size: 28px; }
     .scroll-hint { display: none; }
-    .services-grid, .process-flow, .about-stats, .features-grid, .partners-grid {
+    .services-grid, .process-flow, .features-grid, .partners-grid {
       grid-template-columns: 1fr !important;
+    }
+    .about-stats {
+      grid-template-columns: 1fr 1fr !important;
     }
     .process-flow::before { display: none; }
     .footer-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -655,73 +674,80 @@
 
 /* ===== Responsive + Hamburger ===== */
 
-.menu-toggle{
-display:none;
-background:none;
-border:none;
-color:white;
-font-size:28px;
-cursor:pointer;
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 1001;
+  position: relative;
 }
 
-@media (max-width:768px){
+/* ── MOBILE MENU: дэлгэцийн өндрөөр бүтэн хуудас болгох ── */
+@media (max-width: 768px) {
 
-body{
-cursor:auto;
-}
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
 
-.cursor,.cursor-ring{
-display:none;
-}
+  .menu-toggle { display: block; }
 
-.menu-toggle{
-display:block;
-}
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+  }
 
-nav{
-display:flex;
-align-items:center;
-justify-content:space-between;
-}
+  /* Nav dropdown: position:fixed, nav-ын доороос эхэлж бүх дэлгэцийг хамрана */
+  .nav-links {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 64px);
+    background: rgba(5, 6, 8, 0.98);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 40px 30px;
+    display: none;
+    z-index: 899;
+    overflow-y: auto;
+  }
 
-.nav-links{
-position:absolute;
-top:70px;
-left:0;
-width:100%;
-background:#0a0c10;
-flex-direction:column;
-gap:20px;
-padding:30px;
-display:none;
-}
+  .nav-links.open {
+    display: flex;
+  }
 
-.nav-links.open{
-display:flex;
-}
+  .nav-links li {
+    list-style: none;
+  }
 
-.nav-links li{
-list-style:none;
-}
+  .nav-links a {
+    font-size: 16px;
+    letter-spacing: 0.2em;
+  }
 
 }
 
 /* loader */
-
-#loader{
-position:fixed;
-inset:0;
-background:#050608;
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:99999;
-font-size:22px;
-letter-spacing:2px;
+#loader {
+  position: fixed;
+  inset: 0;
+  background: #050608;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  font-size: 22px;
+  letter-spacing: 2px;
 }
 
-body.loaded #loader{
-display:none;
+body.loaded #loader {
+  display: none;
 }
 
 </style>
@@ -730,27 +756,24 @@ display:none;
 
 <div id="loader">LOADING</div>
 
-
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
 <!-- NAV -->
 <nav id="navbar">
-<button class="menu-toggle material-icons-round">menu</button>
+  <button class="menu-toggle material-icons-round" id="menuToggle">menu</button>
   <a href="" class="nav-logo">
-  <div class="nav-logo-text">
-    Их Хар Сүлд
-    <span>Security Services</span>
-  </div>
-</a>
-  <ul class="nav-links">
+    <div class="nav-logo-text">
+      Их Хар Сүлд
+      <span>Security Services</span>
+    </div>
+  </a>
+  <ul class="nav-links" id="navMenu">
     <li><a href="#services">Үйлчилгээ</a></li>
     <li><a href="#process">Үйл явц</a></li>
     <li><a href="#about">Бидний тухай</a></li>
     <li><a href="info.html">Мэдээлэл</a></li>
     <li><a href="#contact">Холбогдох</a></li>
-  </ul>
-  <ul class="nav-links">
     <li><a href="https://www.facebook.com/profile.php?id=100063890950295">Facebook</a></li>
   </ul>
 </nav>
@@ -916,7 +939,7 @@ display:none;
     <h2 class="section-title">2005 оноос итгэлтэй хамтрагч</h2>
     <div class="divider"></div>
     <p class="about-body">
-      Их Хар Сүлд ХХК нь 20 гаруй жилийн туршлагатай, 750 гаруй харилцагчидтай хамгаалалт, дохиолол, техникийн үйлчилгээний тэргүүлэх компани юм. Харилцагчдынхаа талархал хүндэтгэлийг хүлээж ирсэн нь манай хамтын ажиллагааны бахдам амжилт.
+      Их Хар Сүлд ХХК нь 20 гаруй жилийн туршлагатай, 1000+ гаруй харилцагчидтай хамгаалалт, дохиолол, техникийн үйлчилгээний тэргүүлэх компани юм. Харилцагчдынхаа талархал хүндэтгэлийг хүлээж ирсэн нь манай хамтын ажиллагааны бахдам амжилт.
     </p>
     <div class="about-stats">
       <div class="astat">
@@ -966,57 +989,19 @@ display:none;
   
   <div class="contact-form-container reveal" style="max-width: 500px; margin: 0 auto 60px;">
     <form action="https://formsubmit.co/manager@ikh-khar-suld.mn" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
-      <input 
-        type="text" 
-        name="name"
-        placeholder="Таны нэр" 
-        required 
-        style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px;"
-      >
-      <input 
-        type="tel" 
-        name="phone"
-        placeholder="Утасны дугаар" 
-        required 
-        style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px;"
-      >
-      <input 
-        type="email" 
-        name="email"
-        placeholder="И-мэйл хаяг" 
-        required 
-        style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px;"
-      >
-      <textarea 
-        name="message"
-        placeholder="Санал, хүсэлт, сэтгэгдэл" 
-        rows="5" 
-        required 
-        style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px; resize: none;"
-      ></textarea>
+      <input type="text" name="name" placeholder="Таны нэр" required style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px;">
+      <input type="tel" name="phone" placeholder="Утасны дугаар" required style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px;">
+      <input type="email" name="email" placeholder="И-мэйл хаяг" required style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px;">
+      <textarea name="message" placeholder="Санал, хүсэлт, сэтгэгдэл" rows="5" required style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px; resize: none;"></textarea>
       <input type="hidden" name="_captcha" value="false">
-      <button 
-        type="submit" 
-        class="btn-primary" 
-        style="align-self: center; cursor: pointer; border: none;"
-      >
-        Илгээх
-      </button>
+      <button type="submit" class="btn-primary" style="align-self: center; cursor: pointer; border: none;">Илгээх</button>
     </form>
   </div>
   
   <a href="tel:+97699086727" class="btn-primary reveal" style="display: inline-block;">📞 +976 9908 6727</a>
   
   <div class="map-container reveal" style="margin: 40px auto; max-width: 600px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);">
-    <iframe 
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2107.284235871555!2d106.90826726153992!3d47.92327300878402!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d9693262fdbaf39%3A0x61ee256e87e4d058!2sIkh%20Khar%20Suld%20ltd%20engineering%20Company!5e1!3m2!1sen!2smn!4v1772764399266!5m2!1sen!2smn" 
-      width="100%" 
-      height="300" 
-      style="border:0;" 
-      allowfullscreen="" 
-      loading="lazy" 
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2107.284235871555!2d106.90826726153992!3d47.92327300878402!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d9693262fdbaf39%3A0x61ee256e87e4d058!2sIkh%20Khar%20Suld%20ltd%20engineering%20Company!5e1!3m2!1sen!2smn!4v1772764399266!5m2!1sen!2smn" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </div>
   
   <div class="cta-contact reveal">
@@ -1037,8 +1022,6 @@ display:none;
 </footer>
 
 <script>
-  // Contact form - автоматаар FormSubmit.co-д явдаг
-  
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -1071,14 +1054,18 @@ display:none;
 
   // Counter animation
   function animateCounter(el, target) {
+    const originalText = el.textContent.trim();
+    if (!/^\d+\+?$/.test(originalText)) return;
+    const hasPlus = originalText.includes('+');
     let start = 0;
     const duration = 2000;
     const step = timestamp => {
       if (!start) start = timestamp;
       const progress = Math.min((timestamp - start) / duration, 1);
       const val = Math.floor(progress * target);
-      el.textContent = val + (target >= 100 ? '+' : '');
+      el.textContent = val + (hasPlus ? '+' : '');
       if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = originalText;
     };
     requestAnimationFrame(step);
   }
@@ -1098,20 +1085,28 @@ display:none;
 </script>
 
 <script>
+  const toggle = document.getElementById('menuToggle');
+  const navMenu = document.getElementById('navMenu');
 
-const toggle = document.querySelector(".menu-toggle");
-const navLinks = document.querySelectorAll(".nav-links");
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      navMenu.classList.toggle('open');
+      // Hamburger icon өөрчлөх
+      toggle.textContent = navMenu.classList.contains('open') ? 'close' : 'menu';
+    });
+  }
 
-if(toggle){
-toggle.addEventListener("click",()=>{
-navLinks.forEach(n=>n.classList.toggle("open"))
-})
-}
+  // Меню дотрох линк дарахад меню хаагдаж, зөв хэсэгт scroll хийнэ
+  navMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navMenu.classList.remove('open');
+      toggle.textContent = 'menu';
+    });
+  });
 
-window.addEventListener("load",()=>{
-document.body.classList.add("loaded")
-})
-
+  window.addEventListener('load', () => {
+    document.body.classList.add('loaded');
+  });
 </script>
 
 </body>
