@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Үйлчилгээ – Их Хар Сүлд ХХК</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050608;
+    --deep: #0a0c10;
+    --panel: #0e1118;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: #7a6030;
+    --red: #8b1a1a;
+    --red-bright: #c0392b;
+    --white: #f0ede8;
+    --grey: #6b7280;
+    --border: rgba(201,168,76,0.18);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,168,76,0.5);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.18s ease, width 0.2s, height 0.2s;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 900;
+    padding: 20px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(5,6,8,0.95), transparent);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(5,6,8,0.97);
+    border-bottom: none;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 14px;
+    text-decoration: none;
+  }
+  .nav-logo-text {
+    font-size: 13px; letter-spacing: 0.25em;
+    color: var(--white); text-transform: uppercase;
+    font-weight: 600; line-height: 1.3;
+  }
+  .nav-logo-text span {
+    display: block; color: var(--gold); font-size: 10px; letter-spacing: 0.3em;
+  }
+  .nav-links {
+    display: flex; gap: 40px; list-style: none;
+  }
+  .nav-links a {
+    color: rgba(240,237,232,0.65);
+    text-decoration: none;
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 600;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 1px; background: var(--gold);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-links a.active { color: var(--gold); }
+  .nav-links a.active::after { transform: scaleX(1); }
+  .nav-cta {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 10px 24px;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 600; font-family: 'Rajdhani', sans-serif;
+    cursor: none;
+    transition: background 0.3s, color 0.3s;
+  }
+  .nav-cta:hover { background: var(--gold); color: var(--black); }
+
+  /* ─── PAGE HERO ─── */
+  .page-hero {
+    min-height: 52vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 160px 60px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero-bg {
+    position: absolute; inset: 0;
+  }
+  .page-hero-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.35;
+  }
+  .page-hero-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, rgba(5,6,8,0.6) 0%, rgba(10,12,16,0.5) 100%);
+    z-index: 1;
+  }
+  .page-hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+    z-index: 2;
+  }
+  .page-hero-line {
+    position: absolute; top: 0; left: 60px; right: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.4;
+    animation: lineGlow 3s ease-in-out infinite alternate;
+    z-index: 3;
+  }
+  @keyframes lineGlow {
+    from { opacity: 0.2; }
+    to { opacity: 0.6; }
+  }
+  .page-hero-content {
+    position: relative; z-index: 4;
+  }
+  .page-hero-tag {
+    font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600;
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 24px;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .page-hero-tag::before {
+    content: ''; width: 40px; height: 1px; background: var(--gold);
+  }
+  .page-hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 6vw, 76px);
+    font-weight: 300; line-height: 1;
+    letter-spacing: -0.01em;
+    opacity: 0; animation: fadeUp 0.9s 0.35s forwards;
+  }
+  .page-hero-title strong {
+    font-weight: 700; color: var(--gold); display: block;
+  }
+  .page-hero-desc {
+    font-size: 15px; line-height: 1.7;
+    color: rgba(240,237,232,0.5);
+    max-width: 500px;
+    margin-top: 20px;
+    opacity: 0; animation: fadeUp 1s 0.5s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SECTION BASE ─── */
+  section { padding: 100px 60px; }
+  .section-tag {
+    font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-tag::before { content: ''; width: 30px; height: 1px; background: var(--gold); }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 4.5vw, 52px);
+    font-weight: 600; line-height: 1.1;
+    margin-bottom: 60px;
+  }
+  .divider {
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin: 24px 0;
+  }
+
+  /* ─── REVEAL ─── */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── BTN ─── */
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    padding: 16px 40px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase;
+    font-weight: 700; text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s, transform 0.2s;
+    position: relative; overflow: hidden;
+    cursor: none;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; top: 0; left: -100%; right: 100%; bottom: 0;
+    background: rgba(255,255,255,0.15);
+    transition: left 0.4s, right 0.4s;
+  }
+  .btn-primary:hover::before { left: 0; right: 0; }
+
+  /* ─── SERVICES GRID ─── */
+  .services-section {
+    background: var(--deep);
+    background-image: url('img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .service-card {
+    background: var(--panel);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+    display: flex;
+    flex-direction: column;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0); transform-origin: center;
+    transition: transform 0.5s;
+    z-index: 2;
+  }
+  .service-card:hover { background: #111318; }
+  .service-card:hover::before { transform: scaleX(1); }
+
+  /* Зургийн хэсэг */
+  .service-img-wrap {
+    width: 100%;
+    height: 220px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: rgba(201,168,76,0.04);
+    position: relative;
+  }
+  .service-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.6s ease, opacity 0.4s;
+    opacity: 0.75;
+  }
+  .service-card:hover .service-img-wrap img {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  /* Зураг байхгүй үед placeholder */
+  .service-img-placeholder {
+    width: 100%;
+    height: 220px;
+    flex-shrink: 0;
+    background: rgba(201,168,76,0.04);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(201,168,76,0.15);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .service-body {
+    padding: 40px 36px 44px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .service-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px; font-weight: 700;
+    color: rgba(201,168,76,0.08);
+    position: absolute; top: 52%; right: 24px;
+    line-height: 1;
+    transition: color 0.4s;
+    z-index: 0;
+  }
+  .service-card:hover .service-num { color: rgba(201,168,76,0.15); }
+  .service-icon {
+    width: 44px; height: 44px;
+    border: 1px solid var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 22px;
+    transition: border-color 0.3s;
+    position: relative; z-index: 1;
+  }
+  .service-card:hover .service-icon { border-color: var(--gold); }
+  .service-title {
+    font-size: 17px; font-weight: 700;
+    letter-spacing: 0.05em; margin-bottom: 12px;
+    color: var(--white);
+    position: relative; z-index: 1;
+  }
+  .service-desc {
+    font-size: 13.5px; line-height: 1.75;
+    color: rgba(240,237,232,0.45); font-weight: 400;
+    position: relative; z-index: 1;
+  }
+
+  /* ─── FEATURES SECTION ─── */
+  .features-section {
+    background: var(--black);
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 0;
+  }
+  .feature-card {
+    background: var(--panel);
+    padding: 48px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+  }
+  .feature-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0);
+    transition: transform 0.5s;
+  }
+  .feature-card:hover { background: #111318; }
+  .feature-card:hover::after { transform: scaleX(1); }
+  .feature-icon {
+    font-size: 28px; margin-bottom: 20px;
+  }
+  .feature-title {
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--white); margin-bottom: 0;
+  }
+
+  /* ─── PARTNERS SECTION ─── */
+  .partners-section {
+    background: var(--deep);
+    background-image: url('img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+    padding: 100px 60px;
+  }
+  .partners-title-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+    gap: 32px;
+  }
+  .partners-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .partner-cell {
+    background: var(--panel);
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .partner-cell:hover { background: #111318; }
+  .partner-cell img {
+    max-width: 100%; max-height: 56px;
+    width: auto; height: auto;
+    object-fit: contain;
+    display: block;
+    filter: brightness(0) invert(1);
+    opacity: 0.35;
+    transition: opacity 0.3s, filter 0.3s;
+  }
+  .partner-cell:hover img {
+    opacity: 0.75;
+    filter: brightness(0.85) sepia(1) saturate(3) hue-rotate(8deg);
+  }
+
+  /* ─── JOURNEY / ABOUT ─── */
+  .journey-section {
+    background: var(--black);
+    background-image: url('img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-blend-mode: darken;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
+  .journey-text {}
+  .journey-body {
+    font-size: 15px; line-height: 1.8;
+    color: rgba(240,237,232,0.55);
+    margin-bottom: 48px;
+  }
+  .journey-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+  .jstat {
+    border-left: 2px solid var(--gold);
+    padding-left: 20px;
+  }
+  .jstat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px; font-weight: 700;
+    color: var(--gold); line-height: 1;
+  }
+  .jstat-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(240,237,232,0.4); margin-top: 4px;
+  }
+  /* Баруун талын зурагны хэсэг */
+  .journey-visual {
+    position: relative;
+  }
+  .journey-img-wrap {
+    width: 100%;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: rgba(201,168,76,0.04);
+    position: relative;
+  }
+  .journey-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0.7;
+  }
+  .journey-img-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    border: 1px solid var(--border);
+    background: rgba(201,168,76,0.03);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(201,168,76,0.12);
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    flex-direction: column; gap: 12px;
+  }
+  .journey-img-placeholder::before {
+    content: '';
+    width: 48px; height: 1px; background: rgba(201,168,76,0.2);
+  }
+  .journey-visual::before {
+    content: '';
+    position: absolute;
+    top: -16px; right: -16px;
+    width: 100%; height: 100%;
+    border: 1px solid rgba(201,168,76,0.12);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── CTA SECTION ─── */
+  .cta-section {
+    background: var(--deep);
+    background-image: url('img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+    text-align: center;
+    padding: 120px 60px;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5.5vw, 64px);
+    font-weight: 300; line-height: 1.1;
+    max-width: 700px; margin: 0 auto 32px;
+  }
+  .cta-title strong { font-weight: 700; color: var(--gold); }
+  .cta-sub {
+    font-size: 15px; color: rgba(240,237,232,0.4);
+    margin-bottom: 52px; max-width: 400px;
+    margin-inline: auto;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--black);
+    border-top: 1px solid var(--border);
+    padding: 48px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-copy {
+    font-size: 12px; letter-spacing: 0.1em;
+    color: rgba(240,237,232,0.25);
+  }
+  .footer-links {
+    display: flex; gap: 32px; list-style: none;
+  }
+  .footer-links a {
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(240,237,232,0.3); text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    nav, section, .page-hero, footer { padding-left: 32px; padding-right: 32px; }
+    nav { padding-top: 16px; padding-bottom: 16px; }
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .partners-grid { grid-template-columns: repeat(4, 1fr); }
+    .journey-section { grid-template-columns: 1fr; gap: 60px; padding: 80px 32px; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 640px) {
+    .services-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .partners-grid { grid-template-columns: repeat(3, 1fr); }
+    .journey-stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-text">
+      Их Хар Сүлд
+      <span>Security Services</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#services">Үйлчилгээ</a></li>
+    <li><a href="index.html#process">Үйл явц</a></li>
+    <li><a href="index.html#about">Бидний тухай</a></li>
+    <li><a href="info.html" class="active">Мэдээлэл</a></li>
+    <li><a href="index.html#contact">Холбогдох</a></li>
+  </ul>
+  <ul class="nav-links">
+    <li><a href="https://www.facebook.com/profile.php?id=100063890950295">Facebook</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-grid"></div>
+  <div class="page-hero-line"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-tag">Бидний үйлчилгээ</div>
+    <h1 class="page-hero-title">
+      Иж бүрэн хамгаалалтын
+      <strong>ШИЙДЛҮҮД</strong>
+    </h1>
+    <p class="page-hero-desc">
+      Бид таны аюулгүй байдал, нэр төрийн баталгааг санал болгож байна. 2005 оноос хойш итгэлтэй хамтрагч.
+    </p>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section">
+  <div class="section-tag reveal">Манай үйлчилгээ</div>
+  <h2 class="section-title reveal">Бидний үзүүлж буй үйлчилгээ</h2>
+
+  <div class="services-grid reveal">
+
+    <!-- 01 Харуул хамгаалалт -->
+    <div class="service-card">
+      <div class="service-num">01</div>
+      <div class="service-img-wrap">
+        <img src="img/1.webp" alt="Харуул Хамгаалалт">
+      </div>
+      <div class="service-body">
+        <div class="service-icon">🛡️</div>
+        <div class="service-title">Харуул Хамгаалалт</div>
+        <p class="service-desc">Объект, байгууллагын аюулгүй байдлыг 24/7 цагийн турш мэргэшсэн харуул хамгаалагчдаар хангана. Аж ахуйн нэгж, орон сууц, худалдааны төв болон нийтийн газруудад иж бүрэн хамгаалалтын үйлчилгээ үзүүлдэг.</p>
+      </div>
+    </div>
+
+    <!-- 02 Аюулгүй байдлын үйлчилгээ -->
+    <div class="service-card">
+      <div class="service-num">02</div>
+      <div class="service-img-wrap">
+        <img src="img/2.webp" alt="Аюулгүй Байдлын Үйлчилгээ">
+      </div>
+      <div class="service-body">
+        <div class="service-icon">📊</div>
+        <div class="service-title">Аюулгүй Байдлын Үйлчилгээ</div>
+        <p class="service-desc">Маркетинг, сургалт, судалгааны алба — чанар, стандартын хэрэгжилтэд тасралтгүй хяналт тавина. Эрсдэлийн үнэлгээ, аюулгүй байдлын аудит болон зөвлөгөө өгдөг.</p>
+      </div>
+    </div>
+
+    <!-- 03 Удирдлагын хяналтын нэгдсэн төв -->
+    <div class="service-card">
+      <div class="service-num">03</div>
+      <div class="service-img-wrap">
+        <img src="img/3.jpg" alt="Удирдлагын Хяналтын Нэгдсэн Төв">
+      </div>
+      <div class="service-body">
+        <div class="service-icon">🏢</div>
+        <div class="service-title">Удирдлагын Хяналтын Нэгдсэн Төв</div>
+        <p class="service-desc">Дэвшилтэт технологиор бүрэн тоноглогдсон, 24 цагийн тасралтгүй хяналтын мэргэшсэн төв. Бодит цагийн дата дамжуулалт, автомат хариу арга хэмжээний систем.</p>
+      </div>
+    </div>
+
+    <!-- 04 Шадар, хувийн хамгаалалт ба групп -->
+    <div class="service-card">
+      <div class="service-num">04</div>
+      <div class="service-img-wrap">
+        <img src="img/4.webp" alt="Шадар, Хувийн Хамгаалалт ба Групп">
+      </div>
+      <div class="service-body">
+        <div class="service-icon">👤</div>
+        <div class="service-title">Шадар, Хувийн Хамгаалалт ба Групп</div>
+        <p class="service-desc">Шадар болон бүлгийн хувийн хамгаалалтын үйлчилгээ. VIP хамгаалалтад мэргэшсэн, олон улсын стандартыг баримтлах баг. Аялал, аргачлал хэрэгжүүлэх бэлтгэгдсэн мэргэжилтнүүд.</p>
+      </div>
+    </div>
+
+    <!-- 05 Мэдээлэл, технологийн аюулгүй байдлын алба -->
+    <div class="service-card">
+      <div class="service-num">05</div>
+      <div class="service-img-wrap">
+        <img src="img/5.jpg" alt="Мэдээлэл, Технологийн Аюулгүй Байдлын Алба">
+      </div>
+      <div class="service-body">
+        <div class="service-icon">📡</div>
+        <div class="service-title">Мэдээлэл, Технологийн Аюулгүй Байдлын Алба</div>
+        <p class="service-desc">Орчин үеийн технологид суурилсан дохиолол хамгаалалт, хяналтын системийн суурилуулалт. Бодит цагийн мэдээллээр өөрийн өмчийг зайнаас хянах "Сүлд" систем.</p>
+      </div>
+    </div>
+
+    <!-- 06 Тусгай хэрэгсэл, хяналтын камер, тактикал хувцас, галын хор худалдаа -->
+    <div class="service-card">
+      <div class="service-num">06</div>
+      <div class="service-img-wrap">
+        <img src="img/6.jpg" alt="Тусгай Хэрэгсэл ба Тоног Төхөөрөмж">
+      </div>
+      <div class="service-body">
+        <div class="service-icon">🔧</div>
+        <div class="service-title">Тусгай Хэрэгсэл ба Тоног Төхөөрөмж</div>
+        <p class="service-desc">Хяналтын камер, тактикал хувцас, галын хор болон аюулгүй байдлын тусгай хэрэгслийн худалдаа. Суурилуулалт болон техникийн засвар үйлчилгээ.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURES / БИДНИЙГ СОНГОХ ШАЛТГААН -->
+<section class="features-section">
+  <div class="section-tag reveal">Биднийг сонгох шалтгаан</div>
+  <h2 class="section-title reveal">Мэргэшсэн Мэргэжлийн Хамт Олон</h2>
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-title">Аюулгүй Байдлын Баталгаа</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚙️</div>
+      <div class="feature-title">Орчин Үеийн Тоног Төхөөрөмж</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⭐</div>
+      <div class="feature-title">Өндөр Чанартай Үйлчилгээ</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏆</div>
+      <div class="feature-title">Олон Жилийн Туршлага</div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS / ХАРИЛЦАГЧ БАЙГУУЛЛАГУУД -->
+<section class="partners-section">
+  <div class="section-tag reveal">Харилцагч</div>
+  <div class="partners-title-row">
+    <h2 class="section-title reveal" style="margin-bottom:0">Хамтран ажиллагч байгууллагууд</h2>
+  </div>
+  <div class="partners-grid reveal">
+    <div class="partner-cell"><img src="img/p1.webp" alt="Хамтрагч 1"></div>
+    <div class="partner-cell"><img src="img/p2.png" alt="Хамтрагч 2"></div>
+    <div class="partner-cell"><img src="img/p3.png" alt="Хамтрагч 3"></div>
+    <div class="partner-cell"><img src="img/p4.svg" alt="Хамтрагч 4"></div>
+    <div class="partner-cell"><img src="img/p5.png" alt="Хамтрагч 5"></div>
+    <div class="partner-cell"><img src="img/p6.png" alt="Хамтрагч 6"></div>
+  </div>
+</section>
+
+<!-- JOURNEY / БИДНИЙ ЗАМНАЛ -->
+<section class="journey-section">
+  <div class="journey-text reveal">
+    <div class="section-tag">Бидний замнал</div>
+    <h2 class="section-title">2005 оноос итгэлтэй хамтрагч</h2>
+    <div class="divider"></div>
+    <p class="journey-body">
+      Их Хар Сүлд ХХК нь 2005 оноос хойш итгэлтэй 750 гаруй харилцагчидтай хамгаалалт, дохиолол, техникийн үйлчилгээ үзүүлэн хамтран ажиллаж байна. Харилцагчдынхаа талархал, хүндэтгэлийг хүлээж ирсэн нь бидний хамтын ажиллагааны бахдам амжилт юм.
+    </p>
+    <div class="journey-stats">
+      <div class="jstat">
+        <div class="jstat-num">1000+</div>
+        <div class="jstat-label">Харилцагч</div>
+      </div>
+      <div class="jstat">
+        <div class="jstat-num">350+</div>
+        <div class="jstat-label">Мэргэжилтэн</div>
+      </div>
+      <div class="jstat">
+        <div class="jstat-num">20+</div>
+        <div class="jstat-label">Жилийн туршлага</div>
+      </div>
+      <div class="jstat">
+        <div class="jstat-num">6</div>
+        <div class="jstat-label">Хэлтэс</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="journey-visual reveal">
+    <div class="journey-img-wrap">
+      <img src="img/j1.jpg" alt="Бидний замнал">
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="section-tag reveal" style="justify-content:center">
+    <span style="display:flex;align-items:center;gap:12px">
+      <span style="width:30px;height:1px;background:var(--gold);display:inline-block"></span>
+      24/7 бид танд үйлчлэхэд бэлэн
+    </span>
+  </div>
+  <h2 class="cta-title reveal">
+    Аюулгүй байдлаа<br><strong>бидэнд итгэн даатга</strong>
+  </h2>
+  <p class="cta-sub reveal">Одоо холбогдож, үнэгүй зөвлөгөө аваарай.</p>
+  <a href="index.html#contact" class="btn-primary reveal">Холбогдох</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2026 Их Хар Сүлд ХХК. Бүх эрх хуулиар хамгаалагдсан.</div>
+  <ul class="footer-links">
+    <li><a href="index.html">Нүүр</a></li>
+    <li><a href="info.html">Мэдээлэл</a></li>
+    <li><a href="index.html#contact">Холбогдох</a></li>
+  </ul>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animCursor() {
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Counter animation
+  function animateCounter(el, target) {
+    let start = 0;
+    const duration = 2000;
+    const step = timestamp => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const val = Math.floor(progress * target);
+      el.textContent = val + (target >= 100 ? '+' : '');
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  const counterObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const nums = e.target.querySelectorAll('.jstat-num');
+        nums.forEach(n => {
+          const val = parseInt(n.textContent);
+          if (!isNaN(val)) animateCounter(n, val);
+        });
+        counterObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.journey-stats').forEach(el => counterObs.observe(el));
+</script>
+</body>
+</html>

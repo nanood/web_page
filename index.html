@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Их Хар Сүлд ХХК</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+  :root {
+    --black: #050608;
+    --deep: #0a0c10;
+    --panel: #0e1118;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: #7a6030;
+    --red: #8b1a1a;
+    --red-bright: #c0392b;
+    --white: #f0ede8;
+    --grey: #6b7280;
+    --border: rgba(201,168,76,0.18);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,168,76,0.5);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.18s ease, width 0.2s, height 0.2s;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 900;
+    padding: 20px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(5,6,8,0.95), transparent);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(5,6,8,0.97);
+    border-bottom: none;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 14px;
+    text-decoration: none;
+  }
+  .nav-logo-icon {
+    width: 44px; height: 44px;
+    border: 1.5px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    color: var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    position: relative;
+  }
+  .nav-logo-icon::before {
+    content: '';
+    position: absolute; inset: 3px;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+  .nav-logo-text {
+    font-size: 13px; letter-spacing: 0.25em;
+    color: var(--white); text-transform: uppercase;
+    font-weight: 600; line-height: 1.3;
+  }
+  .nav-logo-text span {
+    display: block; color: var(--gold); font-size: 10px; letter-spacing: 0.3em;
+  }
+  .nav-links {
+    display: flex; gap: 40px; list-style: none;
+  }
+  .nav-links a {
+    color: rgba(240,237,232,0.65);
+    text-decoration: none;
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 600;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 1px; background: var(--gold);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-cta {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 10px 24px;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 600; font-family: 'Rajdhani', sans-serif;
+    cursor: none;
+    transition: background 0.3s, color 0.3s;
+  }
+  .nav-cta:hover { background: var(--gold); color: var(--black); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 120px 60px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: transparent;
+    z-index: 0;
+  }
+  .hero-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url('img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    z-index: 0;
+  }
+  .hero-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 50%, rgba(139,26,26,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 10% 80%, rgba(201,168,76,0.04) 0%, transparent 50%),
+      linear-gradient(160deg, rgba(5,6,8,0.3) 0%, rgba(10,12,16,0.3) 50%, rgba(8,10,14,0.3) 100%);
+    z-index: 1;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
+    z-index: 1;
+  }
+  .hero-line-top {
+    position: absolute; top: 0; left: 60px; right: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.4;
+    animation: lineGlow 3s ease-in-out infinite alternate;
+  }
+  @keyframes lineGlow {
+    from { opacity: 0.2; }
+    to { opacity: 0.6; }
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 800px; }
+  .hero-tag {
+    font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600;
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 36px;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-tag::before {
+    content: ''; width: 40px; height: 1px; background: var(--gold);
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 8vw, 96px);
+    font-weight: 300; line-height: 0.95;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+    opacity: 0; animation: fadeUp 0.9s 0.4s forwards;
+  }
+  .hero-title strong {
+    font-weight: 700; color: var(--gold);
+    display: block;
+  }
+  .hero-title em {
+    font-style: normal; color: rgba(240,237,232,0.45);
+    font-size: 0.55em; letter-spacing: 0.15em;
+    display: block; margin-top: 8px;
+    font-family: 'Rajdhani', sans-serif; font-weight: 400;
+  }
+  .hero-desc {
+    font-size: 16px; line-height: 1.7;
+    color: rgba(240,237,232,0.55);
+    max-width: 480px; margin-bottom: 52px;
+    font-weight: 400;
+    opacity: 0; animation: fadeUp 1s 0.6s forwards;
+  }
+  .hero-actions {
+    display: flex; gap: 20px; align-items: center;
+    opacity: 0; animation: fadeUp 1s 0.8s forwards;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    padding: 16px 40px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase;
+    font-weight: 700; text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s, transform 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; top: 0; left: -100%; right: 100%; bottom: 0;
+    background: rgba(255,255,255,0.15);
+    transition: left 0.4s, right 0.4s;
+  }
+  .btn-primary:hover::before { left: 0; right: 0; }
+  .btn-secondary {
+    color: rgba(240,237,232,0.6);
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 600; text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+    transition: color 0.3s;
+  }
+  .btn-secondary:hover { color: var(--gold); }
+  .btn-secondary::after { content: '→'; font-size: 16px; transition: transform 0.2s; }
+  .btn-secondary:hover::after { transform: translateX(4px); }
+
+  .hero-stats {
+    position: absolute; right: 60px; bottom: 80px;
+    display: flex; flex-direction: column; gap: 32px;
+    z-index: 2;
+    opacity: 0; animation: fadeLeft 1s 1s forwards;
+  }
+  .stat {
+    text-align: right;
+    border-right: 2px solid var(--gold);
+    padding-right: 20px;
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px; font-weight: 700;
+    color: var(--gold); line-height: 1;
+  }
+  .stat-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(240,237,232,0.4); margin-top: 4px;
+  }
+
+  .scroll-hint {
+    position: absolute; bottom: 40px; left: 60px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: rgba(240,237,232,0.3);
+    z-index: 2;
+    opacity: 0; animation: fadeUp 1s 1.2s forwards;
+  }
+  .scroll-line {
+    width: 40px; height: 1px;
+    background: rgba(240,237,232,0.3);
+    position: relative; overflow: hidden;
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute; top: 0; left: -100%; bottom: 0; width: 100%;
+    background: var(--gold);
+    animation: scrollAnim 2s ease-in-out infinite;
+  }
+  @keyframes scrollAnim {
+    0% { left: -100%; } 100% { left: 100%; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ─── SECTION BASE ─── */
+  section { padding: 120px 60px; }
+  .section-tag {
+    font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-tag::before { content: ''; width: 30px; height: 1px; background: var(--gold); }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 600; line-height: 1.1;
+    margin-bottom: 60px;
+  }
+  .divider {
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin: 24px 0;
+  }
+
+  /* ─── SERVICES ─── */
+  .services-section {
+    background: var(--deep);
+    background-image: url('img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .service-card {
+    background: var(--panel);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0); transform-origin: center;
+    transition: transform 0.5s;
+  }
+  .service-card:hover { background: #111318; }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px; font-weight: 700;
+    color: rgba(201,168,76,0.08);
+    position: absolute; top: 20px; right: 30px;
+    line-height: 1;
+    transition: color 0.4s;
+  }
+  .service-card:hover .service-num { color: rgba(201,168,76,0.15); }
+  .service-icon {
+    width: 48px; height: 48px;
+    border: 1px solid var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 28px;
+    transition: border-color 0.3s;
+  }
+  .service-card:hover .service-icon { border-color: var(--gold); }
+  .service-title {
+    font-size: 18px; font-weight: 700;
+    letter-spacing: 0.05em; margin-bottom: 14px;
+    color: var(--white);
+  }
+  .service-desc {
+    font-size: 14px; line-height: 1.7;
+    color: rgba(240,237,232,0.45); font-weight: 400;
+  }
+
+  /* ─── HOW WE WORK ─── */
+  .process-section {
+    background: var(--black);
+    background-image: url('img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-blend-mode: darken;
+  }
+  .process-flow {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    position: relative; margin-top: 20px;
+  }
+  .process-flow::before {
+    content: '';
+    position: absolute; top: 28px; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), var(--gold-dim), transparent);
+  }
+  .process-step { text-align: center; padding: 0 20px; position: relative; }
+  .step-dot {
+    width: 56px; height: 56px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    background: var(--black);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 700;
+    color: var(--gold);
+    position: relative; z-index: 1;
+    transition: background 0.3s;
+  }
+  .process-step:hover .step-dot { background: var(--gold); color: var(--black); }
+  .step-title {
+    font-size: 13px; letter-spacing: 0.1em;
+    font-weight: 700; color: var(--white);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .step-desc {
+    font-size: 12px; color: rgba(240,237,232,0.4); line-height: 1.6;
+  }
+
+  /* ─── ABOUT ─── */
+  .about-section {
+    background: var(--deep);
+    background-image: url('img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 100px; align-items: center;
+  }
+  .about-visual {
+    position: relative;
+  }
+  .about-frame {
+    border: 1px solid var(--border);
+    padding: 48px;
+    background: var(--panel);
+    position: relative;
+  }
+  .about-frame::before {
+    content: '';
+    position: absolute; top: -8px; left: -8px; right: 8px; bottom: 8px;
+    border: 1px solid rgba(201,168,76,0.1);
+    pointer-events: none;
+  }
+  .about-frame::after {
+    content: '';
+    position: absolute; top: 8px; left: 8px; right: -8px; bottom: -8px;
+    border: 1px solid rgba(201,168,76,0.06);
+    pointer-events: none;
+  }
+  .license-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 18px 0; border-bottom: 1px solid rgba(201,168,76,0.1);
+  }
+  .license-item:last-child { border-bottom: none; }
+  .license-dot {
+    width: 6px; height: 6px;
+    background: var(--gold); border-radius: 50%;
+    margin-top: 6px; flex-shrink: 0;
+  }
+  .license-text { font-size: 13px; color: rgba(240,237,232,0.55); line-height: 1.6; }
+  .license-text strong { color: var(--white); display: block; margin-bottom: 2px; font-size: 14px; }
+  .about-text .section-title { margin-bottom: 24px; }
+  .about-body {
+    font-size: 15px; line-height: 1.85;
+    color: rgba(240,237,232,0.55); margin-bottom: 40px;
+  }
+  .about-stats {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px;
+  }
+  .astat {
+    border-left: 2px solid var(--gold);
+    padding-left: 20px;
+  }
+  .astat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px; font-weight: 700; color: var(--gold); line-height: 1;
+  }
+  .astat-label {
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(240,237,232,0.4); margin-top: 6px;
+  }
+
+  /* ─── REGIONS ─── */
+  .regions-section {
+    background: var(--black);
+    background-image: url('img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-blend-mode: darken;
+    text-align: center;
+  }
+  .regions-section .section-tag { justify-content: center; }
+  .regions-section .section-tag::before { display: none; }
+  .regions-section .section-tag::after { content: ''; width: 30px; height: 1px; background: var(--gold); }
+  .regions-grid {
+    display: flex; justify-content: center; gap: 2px;
+    flex-wrap: wrap; margin-top: 20px;
+  }
+  .region-chip {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 14px 32px;
+    font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase;
+    font-weight: 600; color: rgba(240,237,232,0.6);
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+  }
+  .region-chip:hover {
+    background: rgba(201,168,76,0.08);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* ─── CTA ─── */
+  .cta-section {
+    background: var(--deep);
+    background-image: url('img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+    text-align: center;
+    padding: 120px 60px;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 300; line-height: 1.1;
+    max-width: 700px; margin: 0 auto 32px;
+  }
+  .cta-title strong { font-weight: 700; color: var(--gold); }
+  .cta-sub {
+    font-size: 15px; color: rgba(240,237,232,0.4);
+    margin-bottom: 52px; max-width: 400px; margin-inline: auto; margin-bottom: 52px;
+  }
+  .cta-contact {
+    display: flex; justify-content: center; gap: 60px;
+    flex-wrap: wrap; margin-top: 60px;
+    padding-top: 60px;
+    border-top: 1px solid var(--border);
+  }
+  .contact-item { text-align: center; }
+  .contact-label {
+    font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .contact-value {
+    font-size: 18px; font-weight: 600; color: var(--white);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--black);
+    border-top: 1px solid var(--border);
+    padding: 48px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-copy {
+    font-size: 12px; letter-spacing: 0.1em;
+    color: rgba(240,237,232,0.25);
+  }
+  .footer-links {
+    display: flex; gap: 32px; list-style: none;
+  }
+  .footer-links a {
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(240,237,232,0.3); text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  /* ─── REVEAL ANIMATION ─── */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 1024px) {
+    nav, .hero, section, footer { padding-left: 32px; padding-right: 32px; }
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .about-section { grid-template-columns: 1fr; gap: 60px; padding: 80px 32px; }
+    .hero-stats { position: static; flex-direction: row; gap: 40px; margin-top: 60px; }
+    .stat { text-align: left; border-right: none; border-left: 2px solid var(--gold); padding-left: 16px; padding-right: 0; }
+    .process-flow { grid-template-columns: repeat(3, 1fr); gap: 40px; }
+    .process-flow::before { display: none; }
+    nav { padding: 16px 32px; }
+    .nav-links { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    .services-grid { grid-template-columns: 1fr; }
+    .process-flow { grid-template-columns: 1fr 1fr; }
+    .about-stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="" class="nav-logo">
+  <div class="nav-logo-text">
+    Их Хар Сүлд
+    <span>Security Services</span>
+  </div>
+</a>
+  <ul class="nav-links">
+    <li><a href="#services">Үйлчилгээ</a></li>
+    <li><a href="#process">Үйл явц</a></li>
+    <li><a href="#about">Бидний тухай</a></li>
+    <li><a href="info.html">Мэдээлэл</a></li>
+    <li><a href="#contact">Холбогдох</a></li>
+  </ul>
+  <ul class="nav-links">
+    <li><a href="https://www.facebook.com/profile.php?id=100063890950295">Facebook</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-line-top"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">Найдвартай хамгаалалт — 2005 оноос хойш</div>
+    <h1 class="hero-title">
+      <strong>ИХ ХАР СҮЛД</strong>
+      Таны аюулгүй байдлын
+      баталгаа
+    </h1>
+    <p class="hero-desc">
+      24/7 цагийн тасралтгүй харуул хамгаалалт, орчин үеийн инженер техник, дохиолол хамгаалалтын иж бүрэн үйлчилгээ.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Холбогдох</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">1000+</div>
+      <div class="stat-label">Харилцагч</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">350+</div>
+      <div class="stat-label">Мэргэжилтэн</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">20+</div>
+      <div class="stat-label">Жилийн туршлага</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Хэлтэс</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"> </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="section-tag reveal">Манай үйлчилгээ</div>
+  <h2 class="section-title reveal">Иж бүрэн хамгаалалтын<br>шийдлүүд</h2>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-num">01</div>
+      <div class="service-icon">🛡️</div>
+      <div class="service-title">Харуул Хамгаалалт</div>
+      <p class="service-desc">Объект, байгууллагын аюулгүй байдлыг 24/7 цагийн турш мэргэшсэн харуул хамгаалагчдаар хангана.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-num">02</div>
+      <div class="service-icon">👤</div>
+      <div class="service-title">Хувийн Хамгаалалт</div>
+      <p class="service-desc">Шадар болон бүлгийн хувийн хамгаалалтын үйлчилгээ. VIP хамгаалалтад мэргэшсэн баг.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-num">03</div>
+      <div class="service-icon">⚙️</div>
+      <div class="service-title">Инженер Техник</div>
+      <p class="service-desc">Орчин үеийн технологид суурилсан дохиолол хамгаалалт, хяналтын системийн суурилуулалт.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-num">04</div>
+      <div class="service-icon">📡</div>
+      <div class="service-title">Зайны Хамгаалалт</div>
+      <p class="service-desc">Бодит цагийн мэдээллээр өөрийн өмчийг зайнаас хянах, удирдах, хамгаалах боломжтой Сүлд систем.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-num">05</div>
+      <div class="service-icon">🏢</div>
+      <div class="service-title">Удирдлагын Төв</div>
+      <p class="service-desc">Дэвшилтэт технологиор бүрэн тоноглогдсон, 24 цагийн тасралтгүй хяналтын мэргэшсэн төв.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-num">06</div>
+      <div class="service-icon">📊</div>
+      <div class="service-title">Аюулгүй Байдлын Үйлчилгээ</div>
+      <p class="service-desc">Маркетинг, сургалт, судалгааны алба — чанар, стандартын хэрэгжилтэд тасралтгүй хяналт тавина.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section" id="process">
+  <div class="section-tag reveal">Бид хэрхэн ажилладаг вэ</div>
+  <h2 class="section-title reveal">Үйлчилгээний үйл явц</h2>
+  <div class="process-flow reveal">
+    <div class="process-step">
+      <div class="step-dot">1</div>
+      <div class="step-title">Үйлчилгээ сонгох</div>
+      <p class="step-desc">Хэрэгцээнд тохирох үйлчилгээгээ сонгоно</p>
+    </div>
+    <div class="process-step">
+      <div class="step-dot">2</div>
+      <div class="step-title">Цаг товлох</div>
+      <p class="step-desc">Мэргэжилтэнтэй уулзах цагаа товлоно</p>
+    </div>
+    <div class="process-step">
+      <div class="step-dot">3</div>
+      <div class="step-title">Үнэлгээ гаргах</div>
+      <p class="step-desc">Дэлгэрэнгүй үнэлгээ болон саналыг хүлээн авна</p>
+    </div>
+    <div class="process-step">
+      <div class="step-dot">4</div>
+      <div class="step-title">Төлбөр төлөх</div>
+      <p class="step-desc">Тохирсон нөхцөлөөр гэрээ байгуулж төлбөр хийнэ</p>
+    </div>
+    <div class="process-step">
+      <div class="step-dot">5</div>
+      <div class="step-title">Суурилуулалт</div>
+      <p class="step-desc">Мэргэжлийн баг суурилуулалт хийж үйлчилгээ эхэлнэ</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="about-visual reveal">
+    <div class="about-frame">
+      <div class="section-tag" style="margin-bottom:24px">Тусгай зөвшөөрлүүд</div>
+      <div class="license-item">
+        <div class="license-dot"></div>
+        <div class="license-text">
+          <strong>Улсын бүртгэл</strong>
+          9011173142
+        </div>
+      </div>
+      <div class="license-item">
+        <div class="license-dot"></div>
+        <div class="license-text">
+          <strong>Барилга Хот Байгуулалтын Яам</strong>
+          БУ-18-40/17
+        </div>
+      </div>
+      <div class="license-item">
+        <div class="license-dot"></div>
+        <div class="license-text">
+          <strong>Харилцаа Холбооны Зохицуулах Хороо</strong>
+          20520023 · 205110005
+        </div>
+      </div>
+      <div class="license-item">
+        <div class="license-dot"></div>
+        <div class="license-text">
+          <strong>Цагдаагийн Ерөнхий Газар</strong>
+          201807000088
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="about-text reveal">
+    <div class="section-tag">Бидний тухай</div>
+    <h2 class="section-title">2005 оноос итгэлтэй хамтрагч</h2>
+    <div class="divider"></div>
+    <p class="about-body">
+      Их Хар Сүлд ХХК нь 20 гаруй жилийн туршлагатай, 750 гаруй харилцагчидтай хамгаалалт, дохиолол, техникийн үйлчилгээний тэргүүлэх компани юм. Харилцагчдынхаа талархал хүндэтгэлийг хүлээж ирсэн нь манай хамтын ажиллагааны бахдам амжилт.
+    </p>
+    <div class="about-stats">
+      <div class="astat">
+        <div class="astat-num">1000+</div>
+        <div class="astat-label">Харилцагч</div>
+      </div>
+      <div class="astat">
+        <div class="astat-num">350+</div>
+        <div class="astat-label">Алба хаагч</div>
+      </div>
+      <div class="astat">
+        <div class="astat-num">6</div>
+        <div class="astat-label">Хэлтэс</div>
+      </div>
+      <div class="astat">
+        <div class="astat-num">24/7</div>
+        <div class="astat-label">Хяналт</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGIONS -->
+<section class="regions-section">
+  <div class="section-tag reveal">Үйл ажиллагааны бүс</div>
+  <h2 class="section-title reveal">Улсын хэмжээнд үйл ажиллагаа явуулдаг</h2>
+  <div class="regions-grid reveal">
+    <div class="region-chip">Улаанбаатар</div>
+    <div class="region-chip">Дархан</div>
+    <div class="region-chip">Эрдэнэт</div>
+    <div class="region-chip">Бусад орон нутаг</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="section-tag reveal" style="justify-content:center">
+    <span style="display:flex;align-items:center;gap:12px">
+      <span style="width:30px;height:1px;background:var(--gold);display:inline-block"></span>
+      24/7 бид танд үйлчлэхэд бэлэн
+    </span>
+  </div>
+  <h2 class="cta-title reveal">
+    Аюулгүй байдлаа<br><strong>бидэнд итгэн даатга</strong>
+  </h2>
+  <p class="cta-sub reveal">Одоо холбогдож, үнэгүй зөвлөгөө аваарай.</p>
+  
+  <div class="contact-form-container reveal" style="max-width: 500px; margin: 0 auto 60px;">
+    <form action="https://formsubmit.co/manager@ikh-khar-suld.mn" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
+      <input 
+        type="text" 
+        name="name"
+        placeholder="Таны нэр" 
+        required 
+        style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px;"
+      >
+      <input 
+        type="tel" 
+        name="phone"
+        placeholder="Утасны дугаар" 
+        required 
+        style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px;"
+      >
+      <input 
+        type="email" 
+        name="email"
+        placeholder="И-мэйл хаяг" 
+        required 
+        style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px;"
+      >
+      <textarea 
+        name="message"
+        placeholder="Санал, хүсэлт, сэтгэгдэл" 
+        rows="5" 
+        required 
+        style="padding: 12px; background: rgba(201,168,76,0.08); border: 1px solid var(--gold); color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 14px; resize: none;"
+      ></textarea>
+      <input type="hidden" name="_captcha" value="false">
+      <button 
+        type="submit" 
+        class="btn-primary" 
+        style="align-self: center; cursor: pointer; border: none;"
+      >
+        Илгээх
+      </button>
+    </form>
+  </div>
+  
+  <a href="tel:+97699086727" class="btn-primary reveal" style="display: inline-block;">📞 +976 9908 6727</a>
+  
+  <div class="map-container reveal" style="margin: 40px auto; max-width: 600px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);">
+    <iframe 
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2107.284235871555!2d106.90826726153992!3d47.92327300878402!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d9693262fdbaf39%3A0x61ee256e87e4d058!2sIkh%20Khar%20Suld%20ltd%20engineering%20Company!5e1!3m2!1sen!2smn!4v1772764399266!5m2!1sen!2smn" 
+      width="100%" 
+      height="300" 
+      style="border:0;" 
+      allowfullscreen="" 
+      loading="lazy" 
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
+  
+  <div class="cta-contact reveal">
+    <div class="contact-item">
+      <div class="contact-label">Цахим шуудан</div>
+      <div class="contact-value">manager@ikh-khar-suld.mn</div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-label">Цагийн хуваарь</div>
+      <div class="contact-value">Да–Ба · 09:00–18:00</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2026 Их Хар Сүлд ХХК. Бүх эрх хуулиар хамгаалагдсан.</div>
+</footer>
+
+<script>
+  // Contact form - автоматаар FormSubmit.co-д явдаг
+  
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animCursor() {
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Counter animation
+  function animateCounter(el, target) {
+    let start = 0;
+    const duration = 2000;
+    const step = timestamp => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const val = Math.floor(progress * target);
+      el.textContent = val + (target >= 100 ? '+' : '');
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  const counterObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const nums = e.target.querySelectorAll('.stat-num, .astat-num');
+        nums.forEach(n => {
+          const val = parseInt(n.textContent);
+          if (!isNaN(val)) animateCounter(n, val);
+        });
+        counterObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.hero-stats, .about-stats').forEach(el => counterObs.observe(el));
+</script>
+</body>
+</html>
