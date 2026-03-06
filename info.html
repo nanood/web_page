@@ -30,13 +30,10 @@
     color: var(--white);
     font-family: 'Rajdhani', sans-serif;
     overflow-x: hidden;
+    cursor: none;
   }
 
-  @media (pointer: fine) {
-    body { cursor: none; }
-  }
-
-  /* Custom cursor - desktop only */
+  /* Custom cursor */
   .cursor {
     width: 10px; height: 10px;
     background: var(--gold);
@@ -46,7 +43,6 @@
     z-index: 9999;
     transition: transform 0.1s;
     mix-blend-mode: screen;
-    display: none;
   }
   .cursor-ring {
     width: 36px; height: 36px;
@@ -56,10 +52,6 @@
     pointer-events: none;
     z-index: 9998;
     transition: transform 0.18s ease, width 0.2s, height 0.2s;
-    display: none;
-  }
-  @media (pointer: fine) {
-    .cursor, .cursor-ring { display: block; }
   }
 
   /* Noise overlay */
@@ -127,7 +119,7 @@
     padding: 10px 24px;
     font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
     font-weight: 600; font-family: 'Rajdhani', sans-serif;
-    cursor: pointer;
+    cursor: none;
     transition: background 0.3s, color 0.3s;
   }
   .nav-cta:hover { background: var(--gold); color: var(--black); }
@@ -252,7 +244,7 @@
     display: inline-block;
     transition: background 0.3s, transform 0.2s;
     position: relative; overflow: hidden;
-    cursor: pointer;
+    cursor: none;
   }
   .btn-primary::before {
     content: '';
@@ -268,7 +260,7 @@
     background-image: url('img/background.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: scroll;
+    background-attachment: fixed;
     background-repeat: no-repeat;
     background-blend-mode: overlay;
   }
@@ -418,7 +410,7 @@
     background-image: url('img/background.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: scroll;
+    background-attachment: fixed;
     background-repeat: no-repeat;
     background-blend-mode: overlay;
     padding: 100px 60px;
@@ -470,7 +462,7 @@
     background-image: url('img/background.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: scroll;
+    background-attachment: fixed;
     background-repeat: no-repeat;
     background-blend-mode: darken;
     display: grid;
@@ -550,7 +542,7 @@
     background-image: url('img/background.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: scroll;
+    background-attachment: fixed;
     background-repeat: no-repeat;
     background-blend-mode: overlay;
     text-align: center;
@@ -601,87 +593,105 @@
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 1024px) {
-    nav, section, .page-hero, footer { padding-left: 24px; padding-right: 24px; }
+    nav, section, .page-hero, footer { padding-left: 32px; padding-right: 32px; }
     nav { padding-top: 16px; padding-bottom: 16px; }
     .services-grid { grid-template-columns: repeat(2, 1fr); }
     .features-grid { grid-template-columns: repeat(2, 1fr); }
     .partners-grid { grid-template-columns: repeat(4, 1fr); }
-    .journey-section { grid-template-columns: 1fr; gap: 60px; padding: 80px 24px; }
+    .journey-section { grid-template-columns: 1fr; gap: 60px; padding: 80px 32px; }
     .nav-links { display: none; }
-    .partners-section { padding-left: 24px; padding-right: 24px; }
   }
-
-  /* ─── HAMBURGER ─── */
-  .nav-hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    z-index: 1100;
-  }
-  .nav-hamburger span {
-    display: block;
-    width: 24px; height: 1.5px;
-    background: var(--gold);
-    transition: transform 0.3s, opacity 0.3s;
-    transform-origin: center;
-  }
-  .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
-  .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-
-  .mobile-menu {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(5,6,8,0.98);
-    z-index: 1050;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 36px;
-  }
-  .mobile-menu.open { display: flex; }
-  .mobile-menu a {
-    color: rgba(240,237,232,0.7);
-    text-decoration: none;
-    font-size: 22px; letter-spacing: 0.2em; text-transform: uppercase;
-    font-weight: 600;
-    transition: color 0.3s;
-  }
-  .mobile-menu a:hover { color: var(--gold); }
-  .mobile-menu-close {
-    position: absolute; top: 24px; right: 24px;
-    background: none; border: none;
-    color: var(--gold); font-size: 28px;
-    cursor: pointer; line-height: 1;
-  }
-
-  @media (max-width: 1024px) {
-    .nav-hamburger { display: flex; }
-  }
-
   @media (max-width: 640px) {
     .services-grid { grid-template-columns: 1fr; }
     .features-grid { grid-template-columns: 1fr 1fr; }
     .partners-grid { grid-template-columns: repeat(3, 1fr); }
     .journey-stats { grid-template-columns: 1fr 1fr; }
-    section { padding: 64px 20px; }
-    footer { padding: 32px 20px; flex-direction: column; gap: 16px; text-align: center; }
-    .page-hero { padding: 120px 20px 60px; }
-    .journey-visual::before { display: none; }
   }
+
+/* ===== Responsive + Hamburger ===== */
+
+.menu-toggle{
+display:none;
+background:none;
+border:none;
+color:white;
+font-size:28px;
+cursor:pointer;
+}
+
+@media (max-width:768px){
+
+body{
+cursor:auto;
+}
+
+.cursor,.cursor-ring{
+display:none;
+}
+
+.menu-toggle{
+display:block;
+}
+
+nav{
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.nav-links{
+position:absolute;
+top:70px;
+left:0;
+width:100%;
+background:#0a0c10;
+flex-direction:column;
+gap:20px;
+padding:30px;
+display:none;
+}
+
+.nav-links.open{
+display:flex;
+}
+
+.nav-links li{
+list-style:none;
+}
+
+}
+
+/* loader */
+
+#loader{
+position:fixed;
+inset:0;
+background:#050608;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:99999;
+font-size:22px;
+letter-spacing:2px;
+}
+
+body.loaded #loader{
+display:none;
+}
+
 </style>
 </head>
 <body>
+
+<div id="loader">LOADING</div>
+
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
 <!-- NAV -->
 <nav id="navbar">
+<button class="menu-toggle material-icons-round">menu</button>
   <a href="index.html" class="nav-logo">
     <div class="nav-logo-text">
       Их Хар Сүлд
@@ -698,21 +708,7 @@
   <ul class="nav-links">
     <li><a href="https://www.facebook.com/profile.php?id=100063890950295">Facebook</a></li>
   </ul>
-  <button class="nav-hamburger" id="hamburger" aria-label="Цэс нээх">
-    <span></span><span></span><span></span>
-  </button>
 </nav>
-
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobileMenu">
-  <button class="mobile-menu-close" id="mobileClose">✕</button>
-  <a href="index.html#services" class="mobile-link">Үйлчилгээ</a>
-  <a href="index.html#process" class="mobile-link">Үйл явц</a>
-  <a href="index.html#about" class="mobile-link">Бидний тухай</a>
-  <a href="info.html" class="mobile-link">Мэдээлэл</a>
-  <a href="index.html#contact" class="mobile-link">Холбогдох</a>
-  <a href="https://www.facebook.com/profile.php?id=100063890950295" class="mobile-link">Facebook</a>
-</div>
 
 <!-- PAGE HERO -->
 <section class="page-hero">
@@ -921,16 +917,6 @@
 </footer>
 
 <script>
-  // Hamburger menu
-  const hamburger = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobileMenu');
-  const mobileClose = document.getElementById('mobileClose');
-  function openMenu() { hamburger.classList.add('open'); mobileMenu.classList.add('open'); document.body.style.overflow = 'hidden'; }
-  function closeMenu() { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); document.body.style.overflow = ''; }
-  hamburger.addEventListener('click', openMenu);
-  mobileClose.addEventListener('click', closeMenu);
-  document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', closeMenu));
-
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -988,5 +974,23 @@
   }, { threshold: 0.3 });
   document.querySelectorAll('.journey-stats').forEach(el => counterObs.observe(el));
 </script>
+
+<script>
+
+const toggle = document.querySelector(".menu-toggle");
+const navLinks = document.querySelectorAll(".nav-links");
+
+if(toggle){
+toggle.addEventListener("click",()=>{
+navLinks.forEach(n=>n.classList.toggle("open"))
+})
+}
+
+window.addEventListener("load",()=>{
+document.body.classList.add("loaded")
+})
+
+</script>
+
 </body>
 </html>
