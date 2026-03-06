@@ -30,10 +30,13 @@
     color: var(--white);
     font-family: 'Rajdhani', sans-serif;
     overflow-x: hidden;
-    cursor: none;
   }
 
-  /* Custom cursor */
+  @media (pointer: fine) {
+    body { cursor: none; }
+  }
+
+  /* Custom cursor - desktop only */
   .cursor {
     width: 10px; height: 10px;
     background: var(--gold);
@@ -43,6 +46,7 @@
     z-index: 9999;
     transition: transform 0.1s;
     mix-blend-mode: screen;
+    display: none;
   }
   .cursor-ring {
     width: 36px; height: 36px;
@@ -52,6 +56,10 @@
     pointer-events: none;
     z-index: 9998;
     transition: transform 0.18s ease, width 0.2s, height 0.2s;
+    display: none;
+  }
+  @media (pointer: fine) {
+    .cursor, .cursor-ring { display: block; }
   }
 
   /* Noise overlay */
@@ -132,7 +140,7 @@
     padding: 10px 24px;
     font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
     font-weight: 600; font-family: 'Rajdhani', sans-serif;
-    cursor: none;
+    cursor: pointer;
     transition: background 0.3s, color 0.3s;
   }
   .nav-cta:hover { background: var(--gold); color: var(--black); }
@@ -156,7 +164,7 @@
     background-image: url('img/background.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: scroll;
     background-repeat: no-repeat;
     opacity: 0.5;
     z-index: 0;
@@ -339,7 +347,7 @@
     background-image: url('img/background.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: scroll;
     background-repeat: no-repeat;
     background-blend-mode: overlay;
   }
@@ -400,7 +408,7 @@
     background-image: url('img/background.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: scroll;
     background-repeat: no-repeat;
     background-blend-mode: darken;
   }
@@ -444,7 +452,7 @@
     background-image: url('img/background.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: scroll;
     background-repeat: no-repeat;
     background-blend-mode: overlay;
     display: grid; grid-template-columns: 1fr 1fr;
@@ -542,7 +550,7 @@
     background-image: url('img/background.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: scroll;
     background-repeat: no-repeat;
     background-blend-mode: overlay;
     text-align: center;
@@ -612,21 +620,80 @@
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
   @media (max-width: 1024px) {
-    nav, .hero, section, footer { padding-left: 32px; padding-right: 32px; }
+    nav, .hero, section, footer { padding-left: 24px; padding-right: 24px; }
     .services-grid { grid-template-columns: repeat(2, 1fr); }
-    .about-section { grid-template-columns: 1fr; gap: 60px; padding: 80px 32px; }
+    .about-section { grid-template-columns: 1fr; gap: 60px; padding: 80px 24px; }
     .hero-stats { position: static; flex-direction: row; gap: 40px; margin-top: 60px; }
     .stat { text-align: left; border-right: none; border-left: 2px solid var(--gold); padding-left: 16px; padding-right: 0; }
     .process-flow { grid-template-columns: repeat(3, 1fr); gap: 40px; }
     .process-flow::before { display: none; }
-    nav { padding: 16px 32px; }
+    nav { padding: 16px 24px; }
     .nav-links { display: none; }
+  }
+
+  /* ─── HAMBURGER ─── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1100;
+  }
+  .nav-hamburger span {
+    display: block;
+    width: 24px; height: 1.5px;
+    background: var(--gold);
+    transition: transform 0.3s, opacity 0.3s;
+    transform-origin: center;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(5,6,8,0.98);
+    z-index: 1050;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    color: rgba(240,237,232,0.7);
+    text-decoration: none;
+    font-size: 22px; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 600;
+    transition: color 0.3s;
+  }
+  .mobile-menu a:hover { color: var(--gold); }
+  .mobile-menu-close {
+    position: absolute; top: 24px; right: 24px;
+    background: none; border: none;
+    color: var(--gold); font-size: 28px;
+    cursor: pointer; line-height: 1;
+  }
+
+  @media (max-width: 1024px) {
+    .nav-hamburger { display: flex; }
   }
 
   @media (max-width: 640px) {
     .services-grid { grid-template-columns: 1fr; }
     .process-flow { grid-template-columns: 1fr 1fr; }
     .about-stats { grid-template-columns: 1fr 1fr; }
+    .hero { padding: 100px 20px 60px; }
+    section { padding: 80px 20px; }
+    footer { padding: 32px 20px; flex-direction: column; gap: 16px; text-align: center; }
+    .hero-stats { flex-wrap: wrap; gap: 24px; }
+    .cta-contact { gap: 32px; }
+    .map-container { margin: 40px 0 !important; }
+    .contact-form-container { margin: 0 0 40px !important; }
   }
 </style>
 </head>
@@ -653,7 +720,21 @@
   <ul class="nav-links">
     <li><a href="https://www.facebook.com/profile.php?id=100063890950295">Facebook</a></li>
   </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="Цэс нээх">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="mobileClose">✕</button>
+  <a href="#services" class="mobile-link">Үйлчилгээ</a>
+  <a href="#process" class="mobile-link">Үйл явц</a>
+  <a href="#about" class="mobile-link">Бидний тухай</a>
+  <a href="info.html" class="mobile-link">Мэдээлэл</a>
+  <a href="#contact" class="mobile-link">Холбогдох</a>
+  <a href="https://www.facebook.com/profile.php?id=100063890950295" class="mobile-link">Facebook</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -922,7 +1003,7 @@
   <div class="cta-contact reveal">
     <div class="contact-item">
       <div class="contact-label">Цахим шуудан</div>
-      <div class="contact-value">manager@ikh-khar-suld.mn</div>
+      <div class="contact-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="68050906090f0d1a28010300450300091a451b1d040c460506">[email&#160;protected]</a></div>
     </div>
     <div class="contact-item">
       <div class="contact-label">Цагийн хуваарь</div>
@@ -936,9 +1017,19 @@
   <div class="footer-copy">© 2026 Их Хар Сүлд ХХК. Бүх эрх хуулиар хамгаалагдсан.</div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Contact form - автоматаар FormSubmit.co-д явдаг
   
+  // Hamburger menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileClose = document.getElementById('mobileClose');
+  function openMenu() { hamburger.classList.add('open'); mobileMenu.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeMenu() { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); document.body.style.overflow = ''; }
+  hamburger.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', closeMenu));
+
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -988,13 +1079,4 @@
         const nums = e.target.querySelectorAll('.stat-num, .astat-num');
         nums.forEach(n => {
           const val = parseInt(n.textContent);
-          if (!isNaN(val)) animateCounter(n, val);
-        });
-        counterObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.3 });
-  document.querySelectorAll('.hero-stats, .about-stats').forEach(el => counterObs.observe(el));
-</script>
-</body>
-</html>
+          if (!isNaN(val)) animateCounte
